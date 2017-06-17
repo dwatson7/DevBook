@@ -7,9 +7,13 @@ module.exports = function(app, passport) {
 			res.render("home", {user:req.user});
 		}
 		else {
-			db.Post.findAll({raw:true}).then(function(data){
-				console.log(data);
-				res.render("home", {feed:data, user:req.user});
+			// gets all the post on the feed
+			db.Post.findAll({include:[{model:db.Comment, include:db.User}, db.User, {model:db.User, as:"Likes"}], order: 'createdAt DESC'}).then(function(data){
+				// finds the users personal info
+				db.User.findOne({where: {id: req.user.id}}).then(function(userInfo){
+					console.log(data);
+				res.render("home", {feed:data, user:req.user, personal: userInfo});
+				});
 			});
 		}
 	});
@@ -23,7 +27,7 @@ module.exports = function(app, passport) {
 	 });
 
 	app.get("/login", function(req, res){
-		res.render("login");
+		res.render("login", {message: req.flash()});
 	});
 
 	app.get("/create", function(req, res){
@@ -48,6 +52,7 @@ module.exports = function(app, passport) {
 						first_name: req.body.first,
 						last_name: req.body.last,
 						email: req.body.email,
+						image: req.body.image,
 						MemberId: member.id
 					}).then(function(){
 						res.redirect("/login");

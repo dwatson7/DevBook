@@ -1,38 +1,86 @@
+
 <% if (!user) { %>
-	<p><a href="/login">log in</a></p>
-	<p><a href="/create">create account</a></p>
+    <!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <!-- Latest compiled and minified CSS -->
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+            <!-- homepage stylesheet -->
+            <link rel="stylesheet" href="assets/css/homepage.css">
+            <title>JrDevBook</title>
+        </head>
+        <!-- Jr.DevBook Robot Logo -->
+        <body>
+           <div class="header center-block text-center" id='logo'>
+            <div class='form-inline'><img src="http://blog.flamingtext.com/blog/2017/06/14/flamingtext_com_1497479233_446317805.png" border="0"></div>
+            <a href='/logout'> <img src='assets/img/JuniorDevbook-Icon.png' alt='robot' style='width:40px;height:50px;' id='robot'></a>
+                <p><a href="/login">log in</a></p>
+                <p><a href="/create">create account</a></p>
+            </div>
+        </body>
+    </html>
+    
 <% } else { %>
-<!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="UTF-8">
-    <title>News Feed</title>
-    <link rel="stylesheet" href="facebook.css">
-</head>
-<body>
-    <div id="uno">
-        <button><img src="robotcode.png" alt="robot" style="width:40px;height:50px;" id="robot"></button>
-    </div>
-    <div id="dos">
-        <div id="ichi">Personal Info
-            <div id="personal"></div>
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>News Feed</title>
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+            <link rel="stylesheet" href="assets/css/newsfeed.css">
+        </head>
+        <body>
+         <div class="header center-block text-center" id='logo'>
+            <div class='form-inline'><img src="http://blog.flamingtext.com/blog/2017/06/14/flamingtext_com_1497479233_446317805.png" border="0"></div>
+            <a href='/logout'> <img src='assets/img/JuniorDevbook-Icon.png' alt='robot' style='width:40px;height:50px;' id='robot'></a>
+            
         </div>
-        <div id="ni">Main News feed
-            <form action="/post" method="POST">
-                <input type="text" name="post" class="form-control" placeholder="Share what you want." id="two" style="font-size:26px;">
-            </form>  
-            <% for(var i in feed) { %>
-                <div class="three">
-                    <%=feed[i].post%>
+            <div id="dos">
+                <div id="ichi">Personal Info
+                    <div id="personal">
+                    <p><%= personal.first_name + ' ' + personal.last_name%></p>
+                    <img src=<%=personal.image%>>
+                    <div class="personalBio">
+                        <h3>Bio: </h3>
+                    </div>
+                    </div>
                 </div>
-                <% } %>
-        </div>
-        <div id="san">Trending News
-        </div>
-    </div>
-</body>
+                <div id="ni">Main News feed
+                    <form action="/post" method="POST">
+                        <input type="text" name="post" class="form-control" placeholder="Share what you want." id="two" style="font-size:26px;">
+                    </form>  
+                    <% for(var i in feed) { %>
+                        <div>
+                        <div class="postBody">
+                            <div class='authorInfo'>
+                                <img  class='profilePicture' src=<%=feed[i].User.image%>>
+                                <p><%= feed[i].User.first_name + " " + feed[i].User.last_name %></p>
+                            </div>
+                            <div class="authorPost">
+                                <p> <%=feed[i].post%></p>
+                            </div>
 
-</html>
-
+                             <div class='commentsDiv'>
+                                <p class="commentsText">Comments: </p>
+                                <% for (var j in feed[i].Comments) { %>
+                                    <p> <%=feed[i].Comments[j].comment%>
+                                <span class="commentAuthor">By: <%=feed[i].Comments[j].User.first_name + ' ' + feed[i].Comments[j].User.last_name%></span>
+                                <span class="commentDate">Date: <%= feed[i].Comments[j].createdAt %> </span></p>
+                                <% } %>
+                            <form class = 'commentForm' action=<%="/post/comment/" + feed[i].id%> method="POST">
+                                <input type="text" name="comment" style="width: 100%">
+                            </form>
+                        </div>
+                        </div>
+                            <button class="Comment btn btn-danger" type="button">Comment</button>
+                            <button class="Like btn btn-success" type="button">Like</button>    
+                    </div>
+                    <% } %>
+                </div>
+                <div id="san">Trending News
+                </div>
+            </div>
+        </body>
+    </html>
 <% } %>
